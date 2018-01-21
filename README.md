@@ -23,6 +23,7 @@ npm install
 
 ```bash
 npm install easywebpack-cli -g
+npm install server-mock -g
 ```
 
 ## 运行
