@@ -1,0 +1,7 @@
+test/fixtures
+coverage
+public
+test/web
+node_modules
+asset
+router.js

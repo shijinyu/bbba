@@ -1,0 +1,29 @@
+{% macro cookerMain(where='0',page=0,count=20) %}
+{#
+  where = 0 全部,1 已通过,2 未通过,3 待审核
+  page = 0 当前页，显示数值+1
+ #}
+<section class="content-wrapper">
+  <header class="content-header">
+    <h1>厨师备案审核<small></small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="/public/admin-home/index.html"><i class="fa fa-dashboard"></i>系统</a></li>
+      <li class="active">厨师备案审核</li>
+    </ol>
+  </header>
+  <!-- content -->
+  <article class="content">
+    <div class="row">
+      <div class="col-xs-12">
+      <!-- box -->
+      <section class="box">
+        <div id="J_table_wrapper"></div>
+      </section>
+      <!-- /box -->
+      </div>
+    </div>
+  </article>
+  <!-- /content -->
+</section>
+{% endmacro %}

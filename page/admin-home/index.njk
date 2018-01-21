@@ -1,0 +1,13 @@
+{% extends 'layout/layout.njk' %}
+{% from 'sidebar/sidebar.njk' import sidebar %}
+{% from 'admin-home/main.njk' import homeMain %}
+{% block body %}
+<section class="wrapper">
+{% include 'header/header.njk' %}
+{{ sidebar('0') }}
+{{ homeMain() }}
+</section>
+{% endblock %}
+
+
+{% block script %}{% endblock %}

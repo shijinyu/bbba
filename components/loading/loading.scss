@@ -1,0 +1,26 @@
+.ly-loading{
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  min-height: 240px;
+  border: 1px solid #eee;
+  background-color:#f0f0f0;
+
+  article{
+    padding:15px 0;
+    text-align: center;
+
+    .fa{
+      font-size: 24px;
+      color:#999;
+      text-shadow: 1px 1px 1px #fff;
+    }
+  }
+  p{
+    font-family: 'Tahoma', 'stsongti','simsun';
+    padding:10px 0;
+    text-align: center;
+    color:#a0a0a0;
+    text-shadow: 1px 1px 1px #fff;
+  }
+}

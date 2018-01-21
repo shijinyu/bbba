@@ -1,0 +1,94 @@
+<header class="box-header">
+  <section class="btn-toolbar" role="toolbar">
+    <aside class="btn-group" role="group">
+      <button type="button" data-type="0" class="js-btn-type btn btn-primary{% if data.type=='0' %} active{% endif %}"><i class="fa fa-address-card"></i> 全部</button>
+    </aside>
+    <article class="btn-group" role="group">
+      <button type="button" data-type="1" class="js-btn-type btn btn-info{% if data.type=='1' %} active{% endif %}">已通过</button>
+      <button type="button" data-type="2" class="js-btn-type btn btn-info{% if data.type=='2' %} active{% endif %}">未通过</button>
+      <button type="button" data-type="3" class="js-btn-type btn btn-info{% if data.type=='3' %} active{% endif %}">未审核</button>
+    </article>
+  </section>
+</header>
+<article class="box-body">
+  <div class="row"><div class="col-sm-6"></div><div class="col-sm-6"></div></div>
+  {% if data.list.length %}
+  <table class="table table-bordered table-hover dataTable" id="table_main">
+    <thead>
+      <tr role="row">
+        <th rowspan="1" colspan="1" width="15%">#</th>
+        <th tabindex="0" rowspan="1" colspan="1" width="20%">姓名</th>
+        <th tabindex="0" rowspan="1" colspan="1" width="25%">联系方式</th>
+        <th tabindex="0" rowspan="1" colspan="1" width="25%">健康证号</th>
+        <th tabindex="0" rowspan="1" colspan="1" width="15%">操作</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for item in data.list %}
+      <tr role="row">
+        <td><a target="_blank" href="/public/admin-cooker-detail/index.html?csid={{item.csid}}">{{item.csid}}</a></td>
+        <td><a target="_blank" href="/public/admin-cooker-detail/index.html?csid={{item.csid}}">{{item.cs_name}}</a></td>
+        <td>{{item.cs_tel}}</td>
+        <td>{{item.cs_health_id}}</td>
+        <td id="J_item_{{item.csid}}">
+        {% if item.cs_status == 3 %}
+          <button type="button" data-csid="{{item.csid}}" class="js-audit-succ btn btn-xs btn-success"><i class="fa fa-check"></i> 通过</button>
+          <button type="button" data-csid="{{item.csid}}" class="js-audit-fail btn btn-xs btn-danger"><i class="fa fa-times"></i> 不通过</button>
+        </td>
+        {% elif item.cs_status == 2 %}
+          <button type="button" data-csid="{{item.csid}}" class="js-show-reason btn btn-xs btn-warning">查看原因</button>
+        {% elif item.cs_status == 1 %}
+          <span class="text-success"><i class="fa fa-check"></i> 已通过</span>
+        {% endif %}
+      </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  <div class="row data-footer">
+    <section class="col-xs-5 data-status">
+      <div id="J_cookerlist_info" role="status">第 {{data.index + 1}} / {{data.total}}  页，当前显示 {{data.list.length}} 条，共 {{data.list.length * data.total}} 条</div>
+    </section>
+    <section class="col-xs-7 data-pagination">
+      <ul class="pagination" id="J_cookerlist_pg">
+        <li class="paginate_button previous {% if data.index < 1 %} disabled{% endif %}" id="J_cookerlist_pg_prev">
+          <a href="javascript:;" {% if data.index > 0 %} data-dt-idx="{{data.index - 1}}"{% endif %}><span aria-hidden="true">&laquo;</span></a>
+        </li>
+        {% if data.index - 2 > 0 %}
+        <li class="paginate_button">
+          <a href="javascript:;" data-dt-idx="{{data.index - 2}}" tabindex="0">{{data.index - 1}}</a>
+        </li>
+        {% endif %}
+        {% if data.index - 1 > 0 %}
+        <li class="paginate_button">
+          <a href="javascript:;" data-dt-idx="{{data.index - 1}}" tabindex="0">{{data.index}}</a>
+        </li>
+        {% endif %}
+        <li class="paginate_button active">
+          <a href="javascript:;" data-dt-idx="{{data.index}}" tabindex="0">{{data.index + 1}}</a>
+        </li>
+        {% if data.index + 1 <= data.total %}
+        <li class="paginate_button">
+          <a href="javascript:;" data-dt-idx="{{data.index + 1}}" tabindex="0">{{data.index + 2}}</a>
+        </li>
+        {% endif %}
+        {% if data.index + 2 <= data.total %}
+        <li class="paginate_button">
+          <a href="javascript:;" data-dt-idx="{{data.index + 2}}" tabindex="0">{{data.index + 3}}</a>
+        </li>
+        {% endif %}
+        <li class="paginate_button next  {% if data.index >= data.total - 1 %} disabled{% endif %}" id="J_cookerlist_pg_next">
+          <a href="javascript:;" data-dt-idx="{{data.total}}" tabindex="0"><span aria-hidden="true">&raquo;</span></a>
+        </li>
+      </ul>
+    </section>
+  </div>
+  {% else %}
+  <section class="callout callout-info">
+    <h4>没有数据</h4>
+    <p>当前选项没有数据。</p>
+  </section>
+  {% endif %}
+</article>
+<div class="overlay js-loading" style="display: none">
+  <i class="fa fa-spinner fa-pulse icon-2x"></i>
+</div>
