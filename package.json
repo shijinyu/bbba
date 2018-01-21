@@ -17,6 +17,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
+    "server-mock": "^1.1.3",
     "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.2",
     "babel-plugin-add-module-exports": "^0.2.1",
