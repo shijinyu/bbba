@@ -1,0 +1,27 @@
+<section class="modal-dialog">
+  <section class="modal-content">
+    <header class="modal-header">
+      {% if modal.showClose %}
+      <button type="button" class="close js-modal-close">
+        <span>×</span>
+      </button>
+      {% endif %}
+      <h4 class="modal-title">{{modal.title}}</h4>
+    </header>
+    <article class="modal-body">
+      {% if modal.safe %}
+        {{ modal.body | safe }}
+      {% else %}
+        {{ modal.body | escape }}
+      {% endif %}
+    </article>
+    <footer class="modal-footer">
+      {% if modal.safe %}
+        {{ modal.footer | safe }}
+      {% else %}
+        {{ modal.footer | escape }}
+      {% endif %}
+    </footer>
+  </section>
+  <!-- /.modal-content -->
+</section>
