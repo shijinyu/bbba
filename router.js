@@ -191,6 +191,8 @@ const cookerlist = [
   })
 });
 
+let _list = [...cookerlist];
+
 const makeList = (type) => {
   let _list;
   switch(type){
@@ -244,7 +246,7 @@ router.get('/api/cooker/list', function(req, res) {
     i,
     type,
   } = req.query; // 通过 req.query获取请求参数
-  const _list = makeList(type);
+  _list = makeList(type);
 	const data = {
     status: {
       code: '0',
@@ -275,13 +277,14 @@ router.get('/api/cooker/detail', function(req, res){
       data: null
     });
   } else {
-    const _list = makeList();
     const data = {
       status: {
         code: '0',
         msg: 'OK'
       },
-      data: _list[parseInt(Math.random()*10,10)]
+      data: _list.find(item => {
+        return item.csid == csid;
+      })
     };
     res.send(data);
   }

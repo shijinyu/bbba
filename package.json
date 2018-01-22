@@ -53,6 +53,7 @@
   "scripts": {
     "build": "cross-env  NODE_ENV=production easy build prod",
     "start": "cross-env  NODE_ENV=development easy server",
+    "mock": "mock start",
     "lint": "eslint .",
     "fix": "eslint --fix .",
     "test": "mocha test",

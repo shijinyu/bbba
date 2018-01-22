@@ -6,10 +6,16 @@ const tpl = require('./list.tpl.nj');
 
 import loading from '../loading/loading';
 import tplError from '../callout-error/callout-error';
-import { auditCooker } from '../requests/requests';
+import Modal from '../modals/modal';
+import { auditCooker, cookerDetail } from '../requests/requests';
 
 const htmlAuditSuccTd = '<span class="text-success"><i class="fa fa-check"></i> 已通过</span>';
 const htmlAuditFailTd = csid => `<button type="button" data-csid="${csid}" class="js-show-reason btn btn-xs btn-warning">查看原因</button>`;
+const modalDetail = (csid, name, text) => `<p>编号：${csid}</p>
+<p>姓名：${csid}</p>
+<p>未通过原因：${text}</p>`;
+const modalLoading = loading('', '正在载入...', 'loading-modal');
+
 export default class CookerList {
   constructor(id) {
     this.param = {
@@ -20,6 +26,12 @@ export default class CookerList {
     this._tpl = loading();
     this.id = id;
     this.$root = $('#' + id);
+    this.modalReason = new Modal('reason', {
+      'type': 'default',
+      'title': '不通过原因',
+      'body': modalLoading,
+      'footer': '<button type="button" class="js-modal-close btn btn-outline pull-left">关闭</button>'
+    });
     this._bind();
   }
   async render(params = {}) {
@@ -62,8 +74,7 @@ export default class CookerList {
         type
       });
       _this.html();
-    });
-    $root.on('click', '.js-audit-succ', async function() {
+    }).on('click', '.js-audit-succ', async function() {
       const $this = $(this);
       const csid = $this.attr('data-csid');
       const $td = $('#J_item_' + csid);
@@ -78,8 +89,7 @@ export default class CookerList {
       } catch (e) {
         _this._loading(false);
       }
-    });
-    $root.on('click', '.js-audit-fail', async function() {
+    }).on('click', '.js-audit-fail', async function() {
       const $this = $(this);
       const csid = $this.attr('data-csid');
       const $td = $('#J_item_' + csid);
@@ -93,6 +103,25 @@ export default class CookerList {
         }
       } catch (e) {
         _this._loading(false);
+      }
+    }).on('click', '.js-show-reason', async function() {
+      const $this = $(this);
+      const csid = $this.attr('data-csid');
+      _this.modalReason.update({
+        'body': modalLoading
+      });
+      _this.modalReason.show();
+      let result, data;
+      try {
+        result = await cookerDetail(csid);
+        data = result.data;
+        _this.modalReason.update({
+          'body': modalDetail(data.csid, data.cs_name, data.cs_reason)
+        });
+      } catch (e) {
+        _this.modalReason.update({
+          'body': `<p>获取原因失败：${e.status}, ${e.message}</p>`
+        });
       }
     });
   }
