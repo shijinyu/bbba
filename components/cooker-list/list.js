@@ -5,7 +5,7 @@ require('./list.scss');
 const tpl = require('./list.tpl.nj');
 
 import loading from '../loading/loading';
-import tplError from '../callout-error/callout-error';
+import { calloutError } from '../tip/tip';
 import Modal from '../modals/modal';
 import { auditCooker, cookerDetail } from '../requests/requests';
 
@@ -14,6 +14,15 @@ const htmlAuditFailTd = csid => `<button type="button" data-csid="${csid}" class
 const modalDetail = (csid, name, text) => `<p>编号：${csid}</p>
 <p>姓名：${csid}</p>
 <p>未通过原因：${text}</p>`;
+const modalWriteDetail = {
+  'body': `<section class="box collapsed-box">
+  <div id="J_reaon_loading" class="overlay" style="display: none"><i class="fa fa-refresh fa-spin"></i></div>
+  <textarea class="write-detail form-control" id="J_ta_write_reason" placeholder="请输入不通过理由..."></textarea></section>`,
+  'footer': csid => `
+  <button type="button" class="js-modal-close btn btn-default pull-left">关闭</button>
+  <button type="button" data-csid="${csid}" class="js-submit-reason btn btn-primary">提交</button>
+  `
+};
 const modalLoading = loading('', '正在载入...', 'loading-modal');
 
 export default class CookerList {
@@ -32,6 +41,13 @@ export default class CookerList {
       'body': modalLoading,
       'footer': '<button type="button" class="js-modal-close btn btn-outline pull-left">关闭</button>'
     });
+    this.writeReason = new Modal('write_reason', {
+      'extraClass': 'write_reason',
+      'type': 'default',
+      'title': '填写不通过原因',
+      'body': modalWriteDetail.body,
+      'footer': modalWriteDetail.footer('')
+    });
     this._bind();
   }
   async render(params = {}) {
@@ -39,7 +55,7 @@ export default class CookerList {
       await this.fetch(params);
       this._tpl = tpl.render({ data: this.listData });
     } catch (err) {
-      this._tpl = tplError('请求错误', `错误号：${err.code},${err.message}`);
+      this._tpl = calloutError('请求错误', `错误号：${err.code},${err.message}`);
     }
     return this._tpl;
   }
@@ -59,12 +75,13 @@ export default class CookerList {
   auditSucc(csid) {
     return auditCooker(csid, 1);
   }
-  auditError(csid) {
-    return auditCooker(csid, 0);
+  auditError(csid, reason) {
+    return auditCooker(csid, 0, reason);
   }
   _bind() {
     const _this = this;
     const { $root } = this;
+    const $modalWr = $('#J_modal_write_reason');
     $root.on('click', '.js-btn-type', async function() {
       const $this = $(this);
       const type = parseInt($this.attr('data-type'), 10);
@@ -92,18 +109,11 @@ export default class CookerList {
     }).on('click', '.js-audit-fail', async function() {
       const $this = $(this);
       const csid = $this.attr('data-csid');
-      const $td = $('#J_item_' + csid);
-      let result;
-      _this._loading(true);
-      try {
-        result = await _this.auditError(csid);
-        if (!result.status.code) {
-          _this._loading(false);
-          $td.html(htmlAuditFailTd(csid));
-        }
-      } catch (e) {
-        _this._loading(false);
-      }
+      _this.writeReason.update({
+        'body': modalWriteDetail.body,
+        'footer': modalWriteDetail.footer(csid)
+      });
+      _this.writeReason.show();
     }).on('click', '.js-show-reason', async function() {
       const $this = $(this);
       const csid = $this.attr('data-csid');
@@ -122,6 +132,33 @@ export default class CookerList {
         _this.modalReason.update({
           'body': `<p>获取原因失败：${e.status}, ${e.message}</p>`
         });
+      }
+    });
+    $modalWr.on('click', '.js-submit-reason', async function() {
+      const $this = $(this);
+      const csid = $this.attr('data-csid');
+      const $taReason = $('#J_ta_write_reason');
+      const $loadingReason = $('#J_reaon_loading');
+      const $td = $('#J_item_' + csid);
+      let result;
+      $loadingReason.show();
+      $modalWr.find('button').prop('disabled', true);
+      try {
+        result = await _this.auditError(csid, $taReason.val());
+        if (!result.status.code) {
+          $loadingReason.hide();
+          $td.html(htmlAuditFailTd(csid));
+          _this.writeReason.hide();
+        }
+      } catch (err) {
+        console.log(err);
+        _this.writeReason.update({
+          'body': calloutError('请求错误', `错误号：${err.code},${err.message}`),
+          'footer': ''
+        });
+      } finally {
+        $loadingReason.hide();
+        $modalWr.find('button').prop('disabled', false);
       }
     });
   }

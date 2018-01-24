@@ -1,0 +1,18 @@
+.loading-detail{
+    display: flex;
+    min-height: 320px;
+    background-color: #00c0ef;
+    flex-flow: column;
+    text-align: center;
+
+    &>article{
+      padding: 40px 0;
+      font-size: 18px;
+      line-height: 1.5;
+      color: rgba(0, 0, 0,.25);
+    }
+    &>p{
+      font-size: 16px;
+      color:rgba(0, 0, 0,.4);
+    }
+}

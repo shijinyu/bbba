@@ -42,6 +42,7 @@
     "no-underscore-dangle": "off",
     "class-methods-use-this": "off",
     "lines-around-comment": "off",
+    "no-useless-escape":"off",
     "require-jsdoc": "off",
     "semi-spacing":"off",
     "func-style": [

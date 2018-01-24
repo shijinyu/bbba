@@ -11,7 +11,9 @@ function setRouter(app){
  */
 
  router.use(function(req, res, next){
-  res.setHeader('Access-Control-Allow-Origin','http://127.0.0.1:9000');
+  const { origin, host } = req.headers;
+  let allowOrigin = origin ? origin : `http://${host}`;
+  res.setHeader('Access-Control-Allow-Origin',allowOrigin);
   res.setHeader('Access-Control-Allow-Methods','OPTIONS,GET,POST,PUT,DELETE');
   res.setHeader('Access-Control-Allow-Credentials','true');
   next();
@@ -313,6 +315,16 @@ router.post('/api/cooker/detail', function(req, res){
         msg: 'OK'
       }
     };
+    if (audit == 0) {
+      if (!req.body.reason) {
+        data.status = {
+          code: -1,
+          msg: 'Require a reason.'
+        };
+        res.send(401,data);
+        return ;
+      }
+    }
     data.data = audit == 1 ? 'AUDIT SUCCESS' : 'AUDIT ERROR';
     res.send(data);
   }

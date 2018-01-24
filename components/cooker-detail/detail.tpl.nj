@@ -1,0 +1,76 @@
+<header class="content-header">
+  <h1>厨师审核详情 <small>csid: {{cooker.csid}}</small></h1>
+  <ol class="breadcrumb">
+    <li><a href="/public/admin-home/index.html"><i class="fa fa-dashboard"></i>系统</a></li>
+    <li><a href="/public/admin-cooker/index.html">厨师备案审核</a></li>
+    <li class="active">厨师审核详情</li>
+  </ol>
+</header>
+<div class="content">
+  <div class="row">
+    <div class="col-md-6">
+      <section class="box box-default">
+        <header class="box-header with-border">
+          <i class="fa fa-text-width"></i>
+          <h3 class="box-title">基本信息</h3>
+        </header>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <dl class="dl-horizontal">
+            <dt>姓名</dt>
+            <dd>{{cooker.cs_name}}</dd>
+            <dt>性别</dt>
+            <dd>{{cooker.cs_sex}}</dd>
+            <dt>出生日期</dt>
+            <dd>{{cooker.cs_birth}}</dd>
+            <dt>电话号码</dt>
+            <dd>{{cooker.cs_tel}}</dd>
+            <dt>身份证号</dt>
+            <dd>{{cooker.cs_idnum}}</dd>
+            <dt>文化程度</dt>
+            <dd>{{cooker.cs_edu}}</dd>
+            <dt>地址</dt>
+            <dd>{{cooker.cs_adress}}</dd>
+          </dl>
+        </div>
+        <!-- /.box-body -->
+      </section>
+    </div>
+    <div class="col-md-6">
+      <section class="box box-default">
+        <header class="box-header with-border">
+          <i class="fa fa-text-width"></i>
+          <h3 class="box-title">职业信息</h3>
+        </header>
+        <!-- /.box-header -->
+        <div class="box-body">
+          <dl class="dl-horizontal">
+            <dt>其他职业</dt>
+            <dd>{{cooker.cs_other_job}}</dd>
+            <dt>从业年限</dt>
+            <dd>{{cooker.cs_work_time}}年</dd>
+            <dt>活动范围</dt>
+            <dd>{{cooker.cs_act_range}}</dd>
+          </dl>
+          <dl class="dl-horizontal">
+            <dt class="dl-sparate">年度健康体检情况</dt>
+            <dt>健康证是否有效</dt>
+            {% set cs_health_valiable = cooker.cs_health_valiable %}
+            <dd>
+              {% if cs_health_valiable %}
+              <span class="text-success"><i class="fa fa-check-circle"></i> 有效</span>
+              {% else %}
+              <span class="text-text-muted"><i class="fa fa-ban"></i> 无效</span>
+              {% endif %}
+            </dd>
+            {% if cs_health_valiable %}
+            <dt>健康证号</dt>
+            <dd>{{cooker.cs_health_id}}</dd>
+            {% endif %}
+          </dl>
+        </div>
+        <!-- /.box-body -->
+      </section>
+    </div>
+  </div>
+</div>

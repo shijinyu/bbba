@@ -26,8 +26,8 @@
     <tbody>
     {% for item in data.list %}
       <tr role="row">
-        <td><a target="_blank" href="/public/admin-cooker-detail/index.html?csid={{item.csid}}">{{item.csid}}</a></td>
-        <td><a target="_blank" href="/public/admin-cooker-detail/index.html?csid={{item.csid}}">{{item.cs_name}}</a></td>
+        <td><a target="_blank" href="/public/admin-cooker/detail.html?csid={{item.csid}}">{{item.csid}}</a></td>
+        <td><a target="_blank" href="/public/admin-cooker/detail.html?csid={{item.csid}}">{{item.cs_name}}</a></td>
         <td>{{item.cs_tel}}</td>
         <td>{{item.cs_health_id}}</td>
         <td id="J_item_{{item.csid}}">

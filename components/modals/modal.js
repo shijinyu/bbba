@@ -6,6 +6,7 @@ const tpl = require('./modal.tpl.nj');
 const defaultOpt = {
   'modal': {
     'type': 'default',
+    'extraClass': '',
     'showClose': true,
     'title': '提示信息',
     'safe': true
@@ -32,7 +33,7 @@ export default class Modal {
     });
   }
   render() {
-    this.$body.append(`<div id="${this.id}" class="js-modal modal modal-${this.opt.modal.type} fade"></div>`);
+    this.$body.append(`<div id="${this.id}" class="js-modal modal modal-${this.opt.modal.type} ${this.opt.modal.extraClass} fade"></div>`);
     this.$modal = $('#' + this.id);
     this.$modal.html(tpl.render(this.opt));
   }
