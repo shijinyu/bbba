@@ -329,7 +329,16 @@ router.post('/api/cooker/detail', function(req, res){
     res.send(data);
   }
 
-})
+});
+
+router.post('/update/cooker/new', function(req, res){
+  console.log(req.body);
+  res.send({
+    code: 0,
+    msg: 'SUCCESS'
+  })
+});
+
 /**
  * 当 http://localhost:8080/comment 的GET请求到来时被下面匹配到进行处理
  * 通过req.body获取post请求的参数对象
