@@ -1,0 +1,23 @@
+@import "../../components/admin-lte/bootstrap3.scss";
+
+.page{
+  // display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: #f8f8f8;
+}
+.page-inner{
+  // flex:1;
+}
+label{
+  font-weight: 400;
+}
+.weui-btn{
+  .weui-loading{
+    display: none;
+  }
+  &.weui-btn_loading .weui-loading{
+    display: inline-block;
+  }
+}

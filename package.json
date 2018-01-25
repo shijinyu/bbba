@@ -15,6 +15,7 @@
     "jquery": "^3.3.0",
     "lodash": "^4.17.4",
     "popper.js": "^1.12.9",
+    "routerjs": "^1.0.10",
     "validate-js": "^2.0.1",
     "weui": "^1.1.2",
     "weui.js": "^1.1.3"
