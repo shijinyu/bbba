@@ -107,6 +107,7 @@
             <label class="weui-label">蚌埠市</label>
           </header>
           <article class="weui-cell__bd">
+            <input type="hidden" name="areaid" id="J_yh_areaid">
             <select class="weui-select" name="yh_address_country" id="J_yh_address_1" required>
               <option selected value="">---市辖区/县---</option>
               <option>蚌山区</option>
@@ -192,11 +193,17 @@
   <section id="J_cooker_detail_add" class="weui-btn-area">
     <a href="javascript:;" class="js-cooker-add weui-btn weui-btn_plain-primary">添加厨师信息</a>
   </section>
+  <section id="J_cooker_detail_complete" class="weui-btn-area">
+    <a href="javascript:;" class="js-cooker-complete weui-btn weui-btn_primary">完成编辑</a>
+  </section>
 </section>
 <section class="page" id="J_dinner_detail" style="display: none">
   <section id="J_dinner_list"></section>
   <section id="J_dinner_detail_add" class="weui-btn-area">
     <a href="javascript:;" class="js-dinner-add weui-btn weui-btn_plain-primary">添加食品信息</a>
+  </section>
+  <section id="J_dinner_detail_complete" class="weui-btn-area">
+    <a href="javascript:;" class="js-dinner-complete weui-btn weui-btn_primary">完成编辑</a>
   </section>
 </section>
 <div id="loadingToast" style="display:none;">

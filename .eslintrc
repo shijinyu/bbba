@@ -43,6 +43,7 @@
     "class-methods-use-this": "off",
     "lines-around-comment": "off",
     "no-useless-escape":"off",
+    "consistent-return":"off",
     "require-jsdoc": "off",
     "semi-spacing":"off",
     "func-style": [

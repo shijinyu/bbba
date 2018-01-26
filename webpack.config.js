@@ -48,8 +48,8 @@ const config = {
   plugins: {
     definePlugin: {
       name: new webpack.DefinePlugin({
-        'window.__API_URL__': NODE_ENV === 'development' ? JSON.stringify('http://127.0.0.1:8080') : JSON.stringify('http://path/to/api'),
-        'window.__CROS__': NODE_ENV === 'development' ? JSON.stringify('127.0.0.1:8080') : JSON.stringify('www.your-api.com')
+        'window.__API_URL__': NODE_ENV === 'development' ? JSON.stringify('http://127.0.0.1:8080') : JSON.stringify(''),
+        'window.__CROS__': NODE_ENV === 'development' ? JSON.stringify('127.0.0.1:8080') : JSON.stringify('*')
       }),
       enable: true
     }

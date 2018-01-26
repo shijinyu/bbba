@@ -328,12 +328,35 @@ router.post('/api/cooker/detail', function(req, res){
 
 });
 
-router.post('/update/cooker/new', function(req, res){
+router.post('/update/cooker/new', function(req, res) {
   console.log(req.body);
   res.send({
     code: 0,
     msg: 'SUCCESS'
   })
+});
+
+router.get('/api/cooker/id', function(req, res) {
+  const idnum = req.query.cs_idnum;
+  if (!idnum) {
+    res.send(401, {
+      status: {
+        code: -1,
+        msg: 'idnum is required.'
+      }
+    });
+    return ;
+  }
+  const data = _list.find(item => {
+    return item.cs_idnum === idnum;
+  });
+  res.send({
+    status: {
+      code: 0,
+      msg: 'SUCCESS'
+    },
+    data
+  });
 });
 
 /**

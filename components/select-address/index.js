@@ -34,12 +34,15 @@ const address = {
   ]
 };
 
-const setAddress = function($addr1, $addr2) {
+const setAddress = function($addr1, $addr2, $hidden) {
   $addr1.on('change', function() {
     const $this = $(this);
     const val = $this.val();
     const index = address.contry.indexOf(val);
     console.log(index);
+    if ($hidden) {
+      $hidden.val(index);
+    }
     $addr2.html((function() {
       let opts = ['<option value="" selected>---请选择---</option>'];
       if (address.street[index].datas) {

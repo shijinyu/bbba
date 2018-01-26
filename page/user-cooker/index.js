@@ -114,7 +114,7 @@ class UserCooker {
       $wrap.removeClass(WARN_STY);
       $('.js_tooltips').hide();
     });
-    setAddress($('#J_cs_address_1'), $('#J_cs_address_2'));
+    setAddress($('#J_cs_address_1'), $('#J_cs_address_2'), $('#J_cs_areaid'));
   }
   submit() {
     const errors = this.validator._validateForm();
@@ -146,6 +146,7 @@ class UserCooker {
     }).then(function(res) {
       console.log(res);
       $('#loadingToast').fadeOut(500);
+      window.location.href = '/public/user-done/index-success.html';
     }).catch(function(err) {
       $('#J_submit').removeClass('weui-btn_loading weui-btn_disabled').prop('disabled', false);
       console.log(err);

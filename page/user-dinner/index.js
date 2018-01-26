@@ -1,7 +1,7 @@
 import 'amfe-flexible';
 import '../../components/admin-lte/bootstrap3.scss';
 import 'weui';
-// import weui from 'weui.js';
+import weui from 'weui.js';
 import $ from 'jquery';
 import Validator from 'validate-js';
 
@@ -13,14 +13,15 @@ import setAddress from '../../components/select-address/index';
 const Router = require('routerjs');
 
 const WARN_STY = 'weui-cell_warn';
-const tplCookers = index => `<section id="J_cooker_detail_${index}" class="weui-cells weui-cells_form">
+const tplCookers = index => `<section id="J_cooker_detail_${index}" class="weui-cells weui-cells_form js-cooker-detail-wrap">
+<input type="hidden" name="cs_list" id="J_cooker_csid_${index}" value>
 <div class="weui-cell weui-cell_vcode">
   <div class="weui-cell__hd"><label class="weui-label">身份证号</label></div>
   <div class="weui-cell__bd">
     <input class="weui-input" type="number" name="yh_cooker_idnum" id="J_yh_cooker_idnum_${index}">
   </div>
   <div class="weui-cell__ft">
-      <button type="button"  data-index="${index}" class="js-get-cooker weui-vcode-btn">验证</button>
+    <button type="button"  data-index="${index}" class="js-get-cooker weui-vcode-btn">验证</button>
   </div>
 </div>  
 <div class="weui-cell">
@@ -32,7 +33,7 @@ const tplCookers = index => `<section id="J_cooker_detail_${index}" class="weui-
   <div class="weui-cell">
     <div class="weui-cell__hd"><label class="weui-label">食培与健康</label></div>
     <div class="weui-cell__bd">
-      <textarea class="weui-textarea" placeholder="请输入事由" rows="3" name="yh_cooker_detail" id="J_yh_cooker_detail_${index}"></textarea>
+      <textarea class="weui-textarea" placeholder="食培与健康" rows="3" name="yh_cooker_detail" id="J_yh_cooker_detail_${index}"></textarea>
     </div>
   </div>
   <div class="weui-cell">
@@ -42,11 +43,12 @@ const tplCookers = index => `<section id="J_cooker_detail_${index}" class="weui-
   </div>
 </section>`;
 
-const tplFoods = index => `<section id="J_food_detail_${index}" class="weui-cells weui-cells_form"><div class="weui-cell">
+const tplFoods = index => `<section id="J_food_detail_${index}" class="weui-cells weui-cells_form js-food-detail-wrap">
+<div class="weui-cell">
   <div class="weui-cell">
   <div class="weui-cell__hd"><label class="weui-label">名称</label></div>
   <div class="weui-cell__bd">
-    <input class="weui-input" type="number" name="yh_food" id="J_yh_food_${index}">
+    <input class="weui-input js-yh-food-name" type="text" name="yh_food" id="J_yh_food_${index}">
   </div>
   </div>
 </div><div class="weui-cell"><div class="weui-cell__bd">
@@ -162,7 +164,7 @@ class UserDinner {
       $wrap.removeClass(WARN_STY);
       $('.js_tooltips').hide();
     });
-    setAddress($('#J_yh_address_1'), $('#J_yh_address_2'));
+    setAddress($('#J_yh_address_1'), $('#J_yh_address_2'), $('#J_yh_areaid'));
     setAddress($('#J_yh_address_home_1'), $('#J_yh_address_home_2'));
     this.router = new Router();
     this.router.addRoute('#/', function(req, next) {
@@ -185,12 +187,12 @@ class UserDinner {
     }).on('click', '.js-to-dinner-detail', function() {
       _this.router.run('#/dinner');
     }).on('click', '.js-cooker-add', function() {
-      _this.$cookerList.append(tplCookers(_this.fields.yh_cookers_list.length));
+      _this.$cookerList.append(tplCookers($('.js-cooker-detail-wrap').length));
     }).on('click', '.js-remove-cooker', function() {
       const $this = $(this);
       const domId = $this.attr('data-id');
       // const index = parseInt($this.attr('data-index'), 10);
-      $('#' + domId).remove();
+      $('#J_cooker_detail_' + domId).remove();
     }).on('click', '.js-get-cooker', function() {
       const $this = $(this);
       const index = parseInt($this.attr('data-index'), 10);
@@ -200,22 +202,109 @@ class UserDinner {
         url: window.__API_URL__ + '/api/cooker/id',
         type: 'GET',
         data: {
-          'cs_dnum': val
+          'cs_idnum': val
         }
       }).then(res => {
+        const data = res.data;
+        if (data && String(data.cs_status) === '1') {
+          $this.prop('disabled', true);
+          $('#J_yh_cooker_idnum_' + index).prop('readonly', true);
+          $('#J_yh_cooker_name_' + index).val(data.cs_name);
+          $('#J_yh_cooker_detail' + index).val(`健康证号：${data.cs_health_id}，是否有效：${data.cs_health_valiable}，食培情况：${data.cs_train}`);
+          $('#J_cooker_csid_' + index).val(data.csid);
+        } else {
+          weui.toast('该厨师未通过备案，请先通过厨师备案', 3000);
+        }
         _this.$loading.fadeOut(200);
         console.log(res);
+      }).catch(err => {
+        _this.$loading.fadeOut(200);
+        console.log(err);
+        weui.toast('网络错误，请重试！', 3000);
       });
+    }).on('click', '.js-cooker-complete', function() {
+      // 执行厨师校验
+      _this.fields.yh_cookers_list = [];
+      let isFinished = true;
+      $('[name="cs_list"]').each(function() {
+        const val = $(this).val();
+        if (val) {
+          _this.fields.yh_cookers_list.push($(this).val());
+        } else {
+          weui.toast('有未完成的厨师校验，请检查');
+          isFinished = false;
+          return false;
+        }
+      });
+      if (isFinished) {
+        _this.router.run('#/');
+      }
+    }).on('click', '.js-remove-dinner', function() {
+      const $this = $(this);
+      const domId = $this.attr('data-id');
+      $('#' + domId).remove();
+    }).on('click', '.js-dinner-add', function() {
+      _this.$dinnerList.append(tplFoods($('.js-food-detail-wrap').length));
+    }).on('click', '.js-dinner-complete', function() {
+      let isFinished = true;
+      _this.fields.yh_dinners_list = [];
+      $('.js-yh-food-name').each(function() {
+        const val = $(this).val();
+        if (val) {
+          _this.field.yh_dinners_list.push(val);
+        } else {
+          weui.toast('请输入菜品信息', 3000);
+          isFinished = false;
+          return false;
+        }
+      });
+      if (isFinished) {
+        _this.router.run('#/');
+      }
     });
-
   }
   submit() {
-    // 添加申报日期
-    tplCookers(1);
-    tplFoods(1);
+    const errors = this.validator._validateForm();
+    if (errors.length) {
+      return ;
+    }
+    const _this = this;
+    const f = (function() {
+      const a = _this.$form.serializeArray();
+      let b = {};
+      a.forEach(function(item) {
+        b = $.extend(true, {}, b, item);
+      });
+      return b;
+    }());
+    const yhAddressHome = [
+      '蚌埠市',
+      f.yh_address_home_country,
+      f.yh_address_home_street,
+      f.yh_address_home_detail
+    ].join(' ');
+    f.yh_address_home = yhAddressHome;
+    const yhAddress = [
+      '蚌埠市',
+      f.yh_address_country,
+      f.yh_address_street,
+      f.yh_address_detail
+    ].join(' ');
+    f.yh_address = yhAddress;
+    f.cookers = this.fields.yh_cookers_list;
+    f.foods = this.fields.yh_dinners_list;
+    $('#loadingToast').fadeIn(500);
     ajax({
       url: window.__API_URL__ + '/update/cooker/new',
-      type: 'POST'
+      type: 'POST',
+      data: JSON.stringify(f)
+    }).then(function(res) {
+      console.log(res);
+      $('#loadingToast').fadeOut(500);
+      window.location.href = '/public/user-done/index-success.html';
+    }).catch(function(err) {
+      $('#J_submit').removeClass('weui-btn_loading weui-btn_disabled').prop('disabled', false);
+      console.log(err);
     });
   }
 }

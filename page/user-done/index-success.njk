@@ -1,0 +1,26 @@
+{% extends 'mobile/base.njk' %}
+{% block body %}
+<div class="page msg_success js_show">
+    <div class="weui-msg">
+        <div class="weui-msg__icon-area"><i class="weui-icon-success weui-icon_msg"></i></div>
+        <div class="weui-msg__text-area">
+            <h2 class="weui-msg__title">操作成功</h2>
+            <p class="weui-msg__desc">您的申请已提交成功</p>
+        </div>
+        <div class="weui-msg__opr-area">
+            <p class="weui-btn-area">
+                <a href="/public/user-home/index.html" class="weui-btn weui-btn_primary">返回操作面板</a>
+                <a href="javascript:history.back();" class="weui-btn weui-btn_default">继续申请</a>
+            </p>
+        </div>
+        <div class="weui-msg__extra-area">
+            <div class="weui-footer">
+                {# <p class="weui-footer__links">
+                    <a href="javascript:void(0);" class="weui-footer__link">底部链接文本</a>
+                </p>
+                <p class="weui-footer__text">Copyright © 2008-2016 weui.io</p> #}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
