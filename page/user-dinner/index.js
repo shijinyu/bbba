@@ -21,19 +21,19 @@ const tplCookers = index => `<section id="J_cooker_detail_${index}" class="weui-
     <input class="weui-input" type="number" name="yh_cooker_idnum" id="J_yh_cooker_idnum_${index}">
   </div>
   <div class="weui-cell__ft">
-    <button type="button"  data-index="${index}" class="js-get-cooker weui-vcode-btn">验证</button>
+    <button type="button"  data-index="${index}" data-id="J_cooker_detail_${index}" class="js-get-cooker weui-vcode-btn">验证</button>
   </div>
-</div>  
-<div class="weui-cell">
+</div>
+<div class="weui-cell js-extra-info" style="display: none">
     <div class="weui-cell__hd"><label class="weui-label">厨师姓名</label></div>
     <div class="weui-cell__bd">
       <input class="weui-input" type="text" name="yh_cooker_info" id="J_yh_cooker_name_${index}" readonly>
     </div>
   </div>
-  <div class="weui-cell">
+  <div class="weui-cell js-extra-info" style="display: none">
     <div class="weui-cell__hd"><label class="weui-label">食培与健康</label></div>
     <div class="weui-cell__bd">
-      <textarea class="weui-textarea" placeholder="食培与健康" rows="3" name="yh_cooker_detail" id="J_yh_cooker_detail_${index}"></textarea>
+      <textarea class="weui-textarea" placeholder="食培与健康" readonly rows="3" name="yh_cooker_detail" id="J_yh_cooker_detail_${index}"></textarea>
     </div>
   </div>
   <div class="weui-cell">
@@ -45,11 +45,9 @@ const tplCookers = index => `<section id="J_cooker_detail_${index}" class="weui-
 
 const tplFoods = index => `<section id="J_food_detail_${index}" class="weui-cells weui-cells_form js-food-detail-wrap">
 <div class="weui-cell">
-  <div class="weui-cell">
   <div class="weui-cell__hd"><label class="weui-label">名称</label></div>
   <div class="weui-cell__bd">
     <input class="weui-input js-yh-food-name" type="text" name="yh_food" id="J_yh_food_${index}">
-  </div>
   </div>
 </div><div class="weui-cell"><div class="weui-cell__bd">
 <a href="javascript:;" data-index="${index}" data-id="J_food_detail_${index}" class="js-remove-dinner weui-btn weui-btn_mini weui-btn_warn">删除</a>
@@ -81,6 +79,7 @@ const valiRules = [
     'rules': 'required',
     'display': '办宴时间'
   },
+  /*
   {
     'name': 'yh_address_home_country',
     'rules': 'required',
@@ -96,6 +95,7 @@ const valiRules = [
     'rules': 'required',
     'display': '请输入街道'
   },
+  */
   {
     'name': 'yh_address_country',
     'rules': 'required',
@@ -120,12 +120,15 @@ const valiRules = [
     'name': 'yh_reason',
     'rules': 'required',
     'display': '请填写事由'
-  },
+  }
+  /*
+  ,
   {
     'name': 'yh_vcode',
     'rules': 'required',
     'display': '请输入验证码'
   }
+  */
 ];
 
 class UserDinner {
@@ -192,10 +195,11 @@ class UserDinner {
       const $this = $(this);
       const domId = $this.attr('data-id');
       // const index = parseInt($this.attr('data-index'), 10);
-      $('#J_cooker_detail_' + domId).remove();
+      $('#' + domId).remove();
     }).on('click', '.js-get-cooker', function() {
       const $this = $(this);
       const index = parseInt($this.attr('data-index'), 10);
+      const id = $this.attr('data-id');
       const val = $('#J_yh_cooker_idnum_' + index).val();
       _this.$loading.fadeIn(200);
       ajax({
@@ -208,6 +212,7 @@ class UserDinner {
         const data = res.data;
         if (data && String(data.cs_status) === '1') {
           $this.prop('disabled', true);
+          $('#' + id).find('.js-extra-info').show();
           $('#J_yh_cooker_idnum_' + index).prop('readonly', true);
           $('#J_yh_cooker_name_' + index).val(data.cs_name);
           $('#J_yh_cooker_detail' + index).val(`健康证号：${data.cs_health_id}，是否有效：${data.cs_health_valiable}，食培情况：${data.cs_train}`);
@@ -251,7 +256,7 @@ class UserDinner {
       $('.js-yh-food-name').each(function() {
         const val = $(this).val();
         if (val) {
-          _this.field.yh_dinners_list.push(val);
+          _this.fields.yh_dinners_list.push(val);
         } else {
           weui.toast('请输入菜品信息', 3000);
           isFinished = false;
@@ -265,7 +270,7 @@ class UserDinner {
   }
   submit() {
     const errors = this.validator._validateForm();
-    if (errors.length) {
+    if (errors) {
       return ;
     }
     const _this = this;
@@ -273,7 +278,9 @@ class UserDinner {
       const a = _this.$form.serializeArray();
       let b = {};
       a.forEach(function(item) {
-        b = $.extend(true, {}, b, item);
+        b = $.extend(true, {}, b, {
+          [item.name]: item.value
+        });
       });
       return b;
     }());
@@ -295,13 +302,19 @@ class UserDinner {
     f.foods = this.fields.yh_dinners_list;
     $('#loadingToast').fadeIn(500);
     ajax({
-      url: window.__API_URL__ + '/update/cooker/new',
+      url: window.__API_URL__ + '/update/dinner/new',
       type: 'POST',
+      dataType: 'json',
+      contentType: 'application/json; charset=utf-8',
       data: JSON.stringify(f)
     }).then(function(res) {
       console.log(res);
       $('#loadingToast').fadeOut(500);
-      window.location.href = '/public/user-done/index-success.html';
+      if (parseInt(res.status.code, 10) === 0) {
+        window.location.href = '/public/user-done/index-success.html';
+      } else {
+        window.location.href = '/public/user-done/index-fail.html?msg=' + res.status.msg;
+      }
     }).catch(function(err) {
       $('#J_submit').removeClass('weui-btn_loading weui-btn_disabled').prop('disabled', false);
       console.log(err);

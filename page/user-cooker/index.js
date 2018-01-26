@@ -81,12 +81,13 @@ const valiRules = [
     'name': 'cs_train',
     'rules': 'required',
     'display': '请选择规培情况'
-  },
+  }
+  /* ,
   {
     'name': 'cs_vcode',
     'rules': 'required',
     'display': '请输入验证码'
-  }
+  }*/
 ];
 
 class UserCooker {
@@ -97,7 +98,7 @@ class UserCooker {
       if (errors.length > 0) {
         errors.forEach(function(error) {
           const $wrap = $(error.element).parents('.weui-cell');
-          console.log(error.element.tagName);
+          console.log(error);
           if (error.element.tagName === 'INPUT') {
             $wrap.append(`<div class="weui-cell__ft js-error-info">
           <i class="weui-icon-warn"></i>
@@ -118,7 +119,8 @@ class UserCooker {
   }
   submit() {
     const errors = this.validator._validateForm();
-    if (errors.length) {
+    console.log(errors);
+    if (errors) {
       return ;
     }
     const _this = this;
@@ -126,7 +128,10 @@ class UserCooker {
       const a = _this.$form.serializeArray();
       let b = {};
       a.forEach(function(item) {
-        b = $.extend(true, {}, b, item);
+        console.log(item);
+        b = $.extend(true, {}, b, {
+          [item.name]: item.value
+        });
       });
       return b;
     }());
@@ -140,13 +145,21 @@ class UserCooker {
     console.log(f);
     $('#loadingToast').fadeIn(500);
     ajax({
-      url: window.__API_URL__ + '/update/cooker/new',
+      url: window.__API_URL__ + 'index.php?c=cs&a=add',
+      // url: 'http://sa.iwezan.com/fda/index.php?c=cs&a=add',
       type: 'POST',
+      contentType: 'application/json; charset=utf-8',
+      dataType: 'json',
       data: JSON.stringify(f)
     }).then(function(res) {
       console.log(res);
+      $('#J_submit').removeClass('weui-btn_loading weui-btn_disabled').prop('disabled', false);
       $('#loadingToast').fadeOut(500);
-      window.location.href = '/public/user-done/index-success.html';
+      if (parseInt(res.status.code, 10) === 0) {
+        window.location.href = '/public/user-done/index-success.html';
+      } else {
+        window.location.href = '/public/user-done/index-fail.html?msg=' + res.status.msg;
+      }
     }).catch(function(err) {
       $('#J_submit').removeClass('weui-btn_loading weui-btn_disabled').prop('disabled', false);
       console.log(err);

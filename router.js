@@ -12,6 +12,7 @@
   let allowOrigin = origin ? origin : `http://${host}`;
   res.setHeader('Access-Control-Allow-Origin',allowOrigin);
   res.setHeader('Access-Control-Allow-Methods','OPTIONS,GET,POST,PUT,DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   res.setHeader('Access-Control-Allow-Credentials','true');
   next();
  });
@@ -190,10 +191,21 @@ const cookerlist = [
 ].map((item,index) => {
   return Object.assign({},item,{
     'csid': `c${parseInt(Math.random()*9000 + 1000,10)}${index}`
-  })
+  });
 });
 
 let _list = [...cookerlist];
+
+const dinnerlist = [
+  {
+    yh_applier: '食在天',
+
+  }
+].map((item,index) => {
+  return Object.assign({},item,{
+    'yhid': `y${parseInt(Math.random()*9000 + 1000,10)}${index}`
+  });
+});
 
 const makeList = (type) => {
   let _list;
@@ -268,7 +280,7 @@ router.get('/api/cooker/list', function(req, res) {
  * @desc 厨师审核详情
  * @param csid 厨师 csid 号
  */
-router.get('/api/cooker/detail', function(req, res){
+router.get('/api/cooker/detail', function(req, res) {
   const { csid } = req.query;
   if(!csid){
     res.send(400,{
@@ -291,7 +303,9 @@ router.get('/api/cooker/detail', function(req, res){
     res.send(data);
   }
 
-})
+}).options('/api/cooker/detail', function(req, res) {
+  res.send(200);
+});
 
 router.post('/api/cooker/detail', function(req, res){
   const { csid, audit } = req.body;
@@ -328,13 +342,15 @@ router.post('/api/cooker/detail', function(req, res){
 
 });
 
-router.post('/update/cooker/new', function(req, res) {
+router.post('index.php?c=cs&a=add', function(req, res) {
   console.log(req.body);
   res.send({
     code: 0,
     msg: 'SUCCESS'
-  })
-});
+  });
+}).options('index.php?c=cs&a=add', function(req, res) {
+  res.sendStatus(200);
+});;
 
 router.get('/api/cooker/id', function(req, res) {
   const idnum = req.query.cs_idnum;
