@@ -203,8 +203,8 @@ class UserDinner {
       const val = $('#J_yh_cooker_idnum_' + index).val();
       _this.$loading.fadeIn(200);
       ajax({
-        url: window.__API_URL__ + '/api/cooker/id',
-        type: 'GET',
+        url: window.__API_URL__ + '/index.php?c=cs&a=cs',
+        type: 'POST',
         data: {
           'cs_idnum': val
         }
@@ -269,10 +269,11 @@ class UserDinner {
     });
   }
   submit() {
-    const errors = this.validator._validateForm();
-    if (errors) {
+    this.validator._validateForm();
+    if (this.validator.errors.length) {
       return ;
     }
+    $('#J_submit').addClass('weui-btn_loading weui-btn_disabled').prop('disabled', true);
     const _this = this;
     const f = (function() {
       const a = _this.$form.serializeArray();
@@ -302,7 +303,7 @@ class UserDinner {
     f.foods = this.fields.yh_dinners_list;
     $('#loadingToast').fadeIn(500);
     ajax({
-      url: window.__API_URL__ + '/update/dinner/new',
+      url: window.__API_URL__ + '/index.php?c=yh&a=add',
       type: 'POST',
       dataType: 'json',
       contentType: 'application/json; charset=utf-8',
@@ -325,7 +326,7 @@ class UserDinner {
 const page = new UserDinner();
 
 $('#J_submit').on('click', function() {
-  const $this = $(this);
+  // const $this = $(this);
   page.submit();
-  $this.addClass('weui-btn_loading weui-btn_disabled').prop('disabled', true);
+  // $this.addClass('weui-btn_loading weui-btn_disabled').prop('disabled', true);
 });

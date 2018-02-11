@@ -63,13 +63,16 @@ export default class CookerList {
     this.param = $.extend({}, this.param, params);
     return ajax({
       'type': 'GET',
-      'url': window.__API_URL__ + '/api/cooker/list',
+      'url': window.__API_URL__ + '/index.php?m=admin&c=cs&a=index',
       'data': this.param
     }).then(res => {
       this.listData = res.data;
     }).catch(error => {
       this.listData = {};
       this.error = error;
+      if (error) {
+        console.log(error, error.code);
+      }
     });
   }
   auditSucc(csid) {

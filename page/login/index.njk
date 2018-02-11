@@ -18,11 +18,11 @@
     <div class="login-box-body">
       <p class="login-box-msg">厨师备案登录</p>
         <div class="form-group has-feedback">
-          <input type="text" class="form-control" placeholder="用户名">
+          <input type="text" class="form-control" placeholder="用户名" id="J_user">
           <span class="fa fa-envelope form-control-feedback"></span>
         </div>
         <div class="form-group has-feedback">
-          <input type="password" class="form-control" placeholder="密码">
+          <input type="password" class="form-control" placeholder="密码" id="J_pwd">
           <span class="fa fa-lock form-control-feedback"></span>
         </div>
         <div class="row">
@@ -35,7 +35,7 @@
           </div>
           <!-- /.col -->
           <div class="col-xs-4">
-            <button type="submit" class="btn btn-primary btn-block btn-flat">登录</button>
+            <button type="button" class="btn btn-primary btn-block btn-flat" id="J_submit">登录</button>
           </div>
           <!-- /.col -->
         </div>
@@ -46,6 +46,13 @@
 
     </div>
     <!-- /.login-box-body -->
+  </div>
+  <div id="loadingToast" style="display:none;">
+    <div class="weui-mask_transparent"></div>
+    <div class="weui-toast">
+        <i class="weui-loading weui-icon_toast"></i>
+        <p class="weui-toast__content">正在登录...</p>
+    </div>
   </div>
 </body>
 </html>

@@ -48,8 +48,8 @@ const config = {
   plugins: {
     definePlugin: {
       name: new webpack.DefinePlugin({
-        'window.__API_URL__': NODE_ENV === 'development' ? JSON.stringify('http://127.0.0.1:8080') : JSON.stringify('http://sa.iweizan.com/fda'),
-        'window.__CROS__': NODE_ENV === 'development' ? JSON.stringify('127.0.0.1:8080') : JSON.stringify('*')
+        'window.__API_URL__': NODE_ENV === 'development' ? JSON.stringify('http://sa.iwezan.com/fda') : JSON.stringify('http://sa.iwezan.com/fda'),
+        'window.__CROS__': NODE_ENV === 'development' ? JSON.stringify('sa.iwezan.com') : JSON.stringify('*')
       }),
       enable: true
     }

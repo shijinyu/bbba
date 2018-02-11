@@ -3,7 +3,7 @@ import ajax from '../ajax/ajax';
 export const auditCooker = function(csid, audit, reason = '') {
   return ajax({
     'type': 'POST',
-    'url': window.__API_URL__ + '/api/cooker/detail',
+    'url': window.__API_URL__ + '/index.php?m=admin&c=cs&a=audit',
     'data': {
       csid,
       audit,
@@ -14,8 +14,8 @@ export const auditCooker = function(csid, audit, reason = '') {
 
 export const cookerDetail = function(csid) {
   return ajax({
-    'type': 'GET',
-    'url': window.__API_URL__ + '/api/cooker/detail',
+    'type': 'POST',
+    'url': window.__API_URL__ + '/index.php?m=admin&c=cs&a=detail',
     'data': {
       csid
     }

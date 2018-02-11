@@ -98,7 +98,7 @@ class UserCooker {
       if (errors.length > 0) {
         errors.forEach(function(error) {
           const $wrap = $(error.element).parents('.weui-cell');
-          console.log(error);
+          // console.log(error);
           if (error.element.tagName === 'INPUT') {
             $wrap.append(`<div class="weui-cell__ft js-error-info">
           <i class="weui-icon-warn"></i>
@@ -118,11 +118,12 @@ class UserCooker {
     setAddress($('#J_cs_address_1'), $('#J_cs_address_2'), $('#J_cs_areaid'));
   }
   submit() {
-    const errors = this.validator._validateForm();
-    console.log(errors);
-    if (errors) {
+    this.validator._validateForm();
+    console.log(this.validator);
+    if (this.validator.errors.length) {
       return ;
     }
+    $('#J_submit').addClass('weui-btn_loading weui-btn_disabled').prop('disabled', true);
     const _this = this;
     const f = (function() {
       const a = _this.$form.serializeArray();
@@ -145,7 +146,7 @@ class UserCooker {
     console.log(f);
     $('#loadingToast').fadeIn(500);
     ajax({
-      url: window.__API_URL__ + 'index.php?c=cs&a=add',
+      url: window.__API_URL__ + '/index.php?c=cs&a=add',
       // url: 'http://sa.iwezan.com/fda/index.php?c=cs&a=add',
       type: 'POST',
       contentType: 'application/json; charset=utf-8',
@@ -170,7 +171,6 @@ class UserCooker {
 const page = new UserCooker();
 
 $('#J_submit').on('click', function() {
-  const $this = $(this);
+  // const $this = $(this);
   page.submit();
-  $this.addClass('weui-btn_loading weui-btn_disabled').prop('disabled', true);
 });
